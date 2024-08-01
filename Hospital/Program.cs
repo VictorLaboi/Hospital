@@ -91,7 +91,7 @@ public class Program()
 
         while (true)
         {
-            Console.WriteLine("Menu Doctor:");
+            Console.WriteLine("Menu Citas Doctor/Admin:");
             Console.WriteLine("1. Crear Cita");
             Console.WriteLine("2. Actualizar Cita");
             Console.WriteLine("3. Eliminar Cita");
@@ -140,31 +140,85 @@ public class Program()
 
     static async Task AdminMenu()
     {
-        // Puedes agregar opciones de administración aquí
         while (true)
         {
-            Console.WriteLine("Menu Admin:");
-            Console.WriteLine("1. Realizar tareas de administración");
-            Console.WriteLine("2. Salir al menú principal");
-
-            string option = Console.ReadLine();
-            switch (option)
+            Console.WriteLine("Ingrese seccion por administrar:\n1:CITAS Y REGISTROS\n2:DEPARTAMENTOS\n3:MEDICOS\n4:PACIENTES\n5:Salir");
+            string op = Console.ReadLine();
+            switch (op)
             {
                 case "1":
-                    // Implementa las tareas de administración
-                    Console.WriteLine("Tareas de administración aún no implementadas.");
+                    await DoctorMenu();
                     break;
-
                 case "2":
+                    await MenuDepartamentos();
+                    break;
+                case "5":
                     return;
-
-                default:
-                    Console.WriteLine("Opción no válida. Intente de nuevo.");
                     break;
             }
         }
-    }
 
+    }
+        static async Task MenuDepartamentos() {
+        ManejoDepartamento manejoDepartamento = new ManejoDepartamento();
+        Console.WriteLine("Ingrese una opción:\n1:Crear departamento\n2:Consultar departamento\n3:Consultar todo\n4:Eliminar\n5:Actualizar departamento");
+        string op = Console.ReadLine();
+        switch (op)
+        {
+            case "1":
+                Console.WriteLine("Ingresa Nombre de departamento");
+                string name= Console.ReadLine();
+
+                Console.WriteLine("Ingrese descripcion");
+                string desc = Console.ReadLine();
+
+                var nuevoDepa = new Departamento
+                {
+                    IdDepartamento= Guid.NewGuid(),
+                    Nombre = name,
+                    Descripcion = desc,
+                };
+                manejoDepartamento.GuardarDepa(nuevoDepa);
+                break;
+            case "2":
+                Console.WriteLine("Ingrese ID de departamento");
+                Guid depId = Guid.Parse(Console.ReadLine());
+                var regis = manejoDepartamento.ObtenerDepa(depId);
+                foreach (var reg in regis) {
+                    Console.WriteLine($"{reg.Nombre}\n{reg.Descripcion}");
+                }
+                break;
+            case "3":
+                var regis2 = manejoDepartamento.ObtenerDepas();
+                foreach (var i in regis2) {
+                    Console.WriteLine($"{i.IdDepartamento}\n{i.Nombre}\n{i.Descripcion}");
+                }
+                break;
+            case "4":
+                Console.WriteLine("Ingrese el ID del departamento a eliminar");
+                Guid id = Guid.Parse(Console.ReadLine());
+                manejoDepartamento.Eliminar(id);
+                break;
+            case "5":
+                Console.WriteLine("Ingrese el ID del departamento");
+                Guid idDepa = Guid.Parse(Console.ReadLine());
+
+                Console.WriteLine("Ingresa nuevo nombre");
+                string n = Console.ReadLine();
+
+                Console.WriteLine("Ingrese nueva descripcion");
+                string dec = Console.ReadLine() ;
+
+                manejoDepartamento.ActualizarDepa(idDepa,n,dec);
+                Console.WriteLine("Cita actualizada exitosamente.");
+                break;
+            case "6":
+                return;
+            default:
+                Console.WriteLine("Ingrese una opcion válida.");
+                break;
+        }
+    }
     static async Task CrearCita(ManejoCitas manejoCitas)
     {
         Console.WriteLine("Ingrese la fecha (yyyy-MM-dd):");
