@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace Hospital.Servicios
 {
-    internal class ManejoDepartamento
+    internal class ManejoRegistros
     {
-        public void GuardarDepa(Departamento depa)
+        public void GuardarPaciente(Paciente paciente)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Configuracion.ConnectionString))
                 {
-                    string query = "insert into Departamento" +
-                        "(id_departamento,nombre,descripcion) " +
+                    string query = "insert into Pacientes" +
+                        "(id_paciente,nombre,fecha_nacimiento) " +
                         "values" +
-                        "(@Guid,@Nombre,@Descripcion)";
+                        "(@Guid,@Nombre,@FechaNacimiento)";
 
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.AddWithValue("@Guid", depa.IdDepartamento);
-                        cmd.Parameters.AddWithValue("@Nombre", depa.Nombre);
-                        cmd.Parameters.AddWithValue("@Descripcion", depa.Descripcion);
+                        cmd.Parameters.AddWithValue("@Guid", paciente.IdPaciente);
+                        cmd.Parameters.AddWithValue("@Nombre", paciente.NombrePaciente);
+                        cmd.Parameters.AddWithValue("@FechaNacimiento", paciente.FechaNacimiento);
 
                         con.Open();
                         var result = cmd.ExecuteNonQuery();
@@ -46,18 +46,18 @@ namespace Hospital.Servicios
             }
         }
 
-        public void ActualizarDepa(Guid id, string nombre, string descripcion)
+        public void ActualizarPaciente(Guid id, string nombre, DateOnly fechaNacimiento)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Configuracion.ConnectionString))
                 {
-                    string query = "UPDATE Departamento SET nombre = @Nombre, descripcion = @Descripcion WHERE id_departamento = @Id";
+                    string query = "UPDATE Pacientes SET nombre = @NombrePaciente, fecha_nacimiento = @FechaNacimiento WHERE id_paciente = @Id";
                     using (SqlCommand com = new SqlCommand(query, con))
                     {
                         com.Parameters.AddWithValue("@Id", id);
-                        com.Parameters.AddWithValue("@Nombre", nombre);
-                        com.Parameters.AddWithValue("@Descripcion", descripcion);
+                        com.Parameters.AddWithValue("@NombrePaciente", nombre);
+                        com.Parameters.AddWithValue("@FechaNacimiento", fechaNacimiento);
                         con.Open();
                         var result = com.ExecuteNonQuery();
                         if (result == 0)
@@ -80,7 +80,7 @@ namespace Hospital.Servicios
             {
                 using (SqlConnection con = new SqlConnection(Configuracion.ConnectionString))
                 {
-                    string query = "Delete From Departamento WHERE id_departamento = @Id";
+                    string query = "Delete From Pacientes WHERE ID_Paciente = @Id";
                     using (SqlCommand com = new SqlCommand(query, con))
                     {
                         com.Parameters.AddWithValue("@Id", id);
@@ -101,14 +101,14 @@ namespace Hospital.Servicios
             }
         }
 
-        public List<Departamento> ObtenerDepas()
+        public List<Paciente> ObtenerPacientes()
         {
-            List<Departamento> depas = new List<Departamento>();
+            List<Paciente> pacientes = new List<Paciente>();
             try
             {
                 using (SqlConnection con = new SqlConnection(Configuracion.ConnectionString))
                 {
-                    string query = "SELECT * FROM Departamento";
+                    string query = "SELECT * FROM Pacientes";
                     using (SqlCommand com = new SqlCommand(query, con))
                     {
                         con.Open();
@@ -116,17 +116,18 @@ namespace Hospital.Servicios
                         {
                             while (read.Read())
                             {
-                                Departamento depa = new Departamento
+                                Paciente pacient = new Paciente
                                 {
-                                    IdDepartamento = (Guid)read["id_departamento"],
-                                    Nombre = read["nombre"].ToString(),
-                                    Descripcion = read["descripcion"].ToString()
+                                    IdPaciente = (Guid)read["id_paciente"],
+                                    NombrePaciente = read["nombre"].ToString(),
+                                    FechaNacimiento = DateOnly.FromDateTime((DateTime)read["fecha_nacimiento"])
                                 };
-                                depas.Add(depa);
+                                pacientes.Add(pacient);
 
                             }
                         }
-                        return depas;
+
+                        return pacientes;
                     }
                 }
             }
@@ -136,14 +137,14 @@ namespace Hospital.Servicios
                 throw;
             }
         }
-        public List<Departamento> ObtenerDepa(Guid id)
+        public List<Paciente> ObtenerPaciente(Guid id)
         {
-            List<Departamento> dep = new List<Departamento>();
+            List<Paciente> pacientes = new List<Paciente>();
             try
             {
                 using (SqlConnection conn = new SqlConnection(Configuracion.ConnectionString))
                 {
-                    string query = "SELECT * FROM Departamento WHERE id_departamento = @Id";
+                    string query = "SELECT * FROM Pacientes WHERE id_paciente = @Id";
                     using (SqlCommand com = new SqlCommand(query, conn))
                     {
                         com.Parameters.AddWithValue("@Id", id);
@@ -153,17 +154,17 @@ namespace Hospital.Servicios
                         {
                             while (reader.Read())
                             {
-                                Departamento depa = new Departamento
+                                Paciente paciente = new Paciente
                                 {
-                                    IdDepartamento = (Guid)reader["id_departamento"],
-                                    Nombre = reader["nombre"].ToString(),
-                                    Descripcion = reader["descripcion"].ToString(),
+                                    IdPaciente = (Guid)reader["id_paciente"],
+                                    NombrePaciente = reader["nombre"].ToString(),
+                                    FechaNacimiento = DateOnly.FromDateTime((DateTime)reader["fecha_nacimiento"])
                                 };
 
-                                dep.Add(depa);
+                                pacientes.Add(paciente);
                             }
                         }
-                        return dep;
+                        return pacientes;
                     }
                 }
             }

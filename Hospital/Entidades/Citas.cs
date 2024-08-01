@@ -9,7 +9,7 @@ namespace Hospital.Entidades
 {
     internal class Citas
     {
-        public int IdCita { get; set;}
+        public Guid idCita { get; set;}
         public DateOnly Fecha { get; set; }
         public TimeOnly Hora { get; set; }
         public Guid PacienteId { get; set; }
