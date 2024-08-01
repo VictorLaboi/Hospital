@@ -43,13 +43,13 @@ namespace Hospital.Servicios
             }
         }
 
-        public void ActualizarCita(Guid idCita, DateOnly fecha, TimeOnly hora, Guid pacienteId, Guid doctorId)
+        public void ActualizarCita(Guid idCita, DateOnly fecha, TimeOnly hora, Guid pacienteId)
         {
             try
             {
                 using (SqlConnection con = new SqlConnection(Configuracion.ConnectionString))
                 {
-                    string query = "UPDATE Cita SET Fecha = @Fecha, Hora = @Hora, id_paciente = @PacienteId, id_doctor = @DoctorId " +
+                    string query = "UPDATE Cita SET Fecha = @Fecha, Hora = @Hora, id_paciente = @PacienteId " +
                                    "WHERE id_cita = @IdCita";
 
                     using (SqlCommand cmd = new SqlCommand(query, con))
@@ -58,7 +58,6 @@ namespace Hospital.Servicios
                         cmd.Parameters.AddWithValue("@Fecha", fecha.ToDateTime(new TimeOnly(0)));
                         cmd.Parameters.AddWithValue("@Hora", hora.ToTimeSpan());
                         cmd.Parameters.AddWithValue("@PacienteId", pacienteId);
-                        cmd.Parameters.AddWithValue("@DoctorId", doctorId);
 
                         con.Open();
                         int result = cmd.ExecuteNonQuery();

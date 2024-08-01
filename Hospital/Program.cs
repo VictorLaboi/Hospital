@@ -1,363 +1,135 @@
 ﻿using Hospital.Entidades;
 using Hospital.Servicios;
+using Microsoft.Win32;
 
 public class Program()
 {
-    static void Main()
+    static async Task Main(string[] args)
     {
-        //////////////////////////////TODA ESTA SECCION ES PARA MANEJAR EL SERVICIO DE PACIENTES
+        while (true)
+        {
+            Console.WriteLine("Bienvenido al sistema de gestión hospitalaria");
+            Console.WriteLine("Seleccione su rol:");
+            Console.WriteLine("1. Paciente");
+            Console.WriteLine("2. Doctor");
+            Console.WriteLine("3. Admin");
+            Console.WriteLine("4. Salir");
 
-        ////INGRESAR PACIENTES
-        //Paciente j = new Paciente();
-        //ManejoPacientes ingr = new ManejoPacientes();
-        //j.IdPaciente = Guid.NewGuid();
-        //j.NombrePaciente = "Julian2";
-        //Console.WriteLine("Ingrese la fecha de nacimiento (Formato: yyyy-MM-dd):");
-        //string fechaNacimientoInput2 = Console.ReadLine();
+            string roleInput = Console.ReadLine();
+            int role;
+            if (!int.TryParse(roleInput, out role) || role < 1 || role > 4)
+            {
+                Console.WriteLine("Rol no válido. Intente de nuevo.");
+                continue;
+            }
 
-        //DateOnly fechaNacimiento2;
-        //try
-        //{
-        //    fechaNacimiento2 = DateOnly.ParseExact(fechaNacimientoInput2, "yyyy-MM-dd");
-        //}
-        //catch (Exception ex) { throw (ex); }
-        //j.FechaNacimiento = fechaNacimiento2;
+            if (role == 4)
+            {
+                Console.WriteLine("Saliendo...");
+                break;
+            }
 
-        //ingr.GuardarPaciente(j);
+            switch (role)
+            {
+                case 1:
+                    await PacienteMenu();
+                    break;
+                case 2:
+                    await DoctorMenu();
+                    break;
+                case 3:
+                    await AdminMenu();
+                    break;
+            }
+        }
+    }
 
-        ////OBTENER TODOS PACIENTES
-        //ManejoPacientes gestor = new ManejoPacientes();
-        //List<Paciente> pacientes = gestor.ObtenerPacientes();
-
-        //foreach (var i in pacientes)
-        //{
-        //    Console.WriteLine($"{i.IdPaciente}, {i.NombrePaciente}, {i.FechaNacimiento}");
-        //}
-
-        ////OBTENER UN PACIENTE.
-        //ManejoPacientes manejo = new ManejoPacientes();
-        //Console.WriteLine("Ingresa ID Del paciente\n");
-        //string id = Console.ReadLine();
-
-        //List<Paciente> pac = gestor.ObtenerPaciente(Guid.Parse(id));
-        //foreach (var i in pac)
-        //{
-        //    Console.WriteLine($"{i.IdPaciente}, {i.NombrePaciente}, {i.FechaNacimiento}");
-        //}
-
-        ////ACTUALIZAR
-        //Console.WriteLine("Ingrese el ID");
-        //string ids = Console.ReadLine();
-
-        //Console.WriteLine("Ingrese el nombre del paciente:");
-        //string nombre = Console.ReadLine();
-
-        //Console.WriteLine("Ingrese la fecha de nacimiento (Formato: yyyy-MM-dd):");
-        //string fechaNacimientoInput = Console.ReadLine();
-
-        //DateOnly fechaNacimiento;
-        //try
-        //{
-        //    fechaNacimiento = DateOnly.ParseExact(fechaNacimientoInput, "yyyy-MM-dd");
-        //}
-        //catch (FormatException)
-        //{
-        //    Console.WriteLine("Fecha de nacimiento no válida. Asegúrese de usar el formato correcto (yyyy-MM-dd).");
-        //    return;
-        //}
-        //gestor.ActualizarPaciente(Guid.Parse(ids), nombre, fechaNacimiento);
-
-        ////ELIMINAR
-        //ManejoPacientes el = new ManejoPacientes();
-        //el.Eliminar(Guid.Parse("99ADE314-52F4-4177-BBBB-8F19AE4431DC"));
-
-        //DEPARTAMENTOS
-
-        ////DAR DE ALTA
-        //Console.WriteLine("Ingrese el nombre del departamento:");
-        //string nombre = Console.ReadLine();
-
-        //Console.WriteLine("Ingrese la descripción del departamento:");
-        //string descripcion = Console.ReadLine();
-
-        //Departamento departamento = new Departamento
-        //{
-        //    IdDepartamento = Guid.NewGuid(),
-        //    Nombre = nombre,
-        //    Descripcion = descripcion
-        //};
-
-        //var manejoDepartamentos = new ManejoDepartamento();
-        //manejoDepartamentos.GuardarDepa(departamento);
-        //Console.WriteLine("Departamento agregado exitosamente.");
-
-        ////ACTUALIZAR
-        //Console.WriteLine("Ingrese el ID del departamento (GUID) a modificar:");
-        //string idDepartamento = Console.ReadLine();
-
-        //if (Guid.TryParse(idDepartamento, out Guid guidDepartamento))
-        //{
-        //    Console.WriteLine("Ingrese el nuevo nombre del departamento:");
-        //    string nombre2 = Console.ReadLine();
-
-        //    Console.WriteLine("Ingrese la nueva descripción del departamento:");
-        //    string descripcion2 = Console.ReadLine();
-
-        //    var manejoDepartamento = new ManejoDepartamento();
-        //    manejoDepartamento.ActualizarDepa(guidDepartamento, nombre2, descripcion2);
-        //    Console.WriteLine("Departamento modificado exitosamente.");
-        //}
-        //else
-        //{
-        //    Console.WriteLine("Formato de GUID inválido.");
-        //}
-
-        //COSULTAR
-
-        //var manejoDepartamentos = new ManejoDepartamento();
-        //List<Departamento> departamentos = manejoDepartamentos.ObtenerDepas();
-
-        //if (departamentos.Count > 0)
-        //{
-        //    foreach (var departamento in departamentos)
-        //    {
-        //        Console.WriteLine($"ID: {departamento.IdDepartamento}, Nombre: {departamento.Nombre}, Descripción: {departamento.Descripcion}");
-        //    }
-        //}
-        //else
-        //{
-        //    Console.WriteLine("No se encontraron departamentos.");
-        //}
-
-        ////CONSULTAR UNO
-        //Console.WriteLine("Ingrese el ID del departamento (GUID) a consultar:");
-        //string idDepartamento = Console.ReadLine();
-
-        //if (Guid.TryParse(idDepartamento, out Guid guidDepartamento))
-        //{
-        //    var manejoDepartamento = new ManejoDepartamento();
-        //    List<Departamento> departamentos2 = manejoDepartamento.ObtenerDepa(guidDepartamento);
-
-        //    if (departamentos2.Count > 0)
-        //    {
-        //        foreach (var departamento in departamentos2)
-        //        {
-        //            Console.WriteLine($"ID: {departamento.IdDepartamento}, Nombre: {departamento.Nombre}, Descripción: {departamento.Descripcion}");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("No se encontró el departamento.");
-        //    }
-        //}
-        //else
-        //{
-        //    Console.WriteLine("Formato de GUID inválido.");
-        //}
-
-        ////ELIMINAR
-
-        //Console.WriteLine("Ingrese el ID del departamento (GUID) a eliminar:");
-        //string idDepartamento = Console.ReadLine();
-
-        //if (Guid.TryParse(idDepartamento, out Guid guidDepartamento))
-        //{
-        //    var manejoDepartamentos = new ManejoDepartamento();
-        //    manejoDepartamentos.Eliminar(guidDepartamento);
-        //    Console.WriteLine("Departamento eliminado exitosamente.");
-        //}
-        //else
-        //{
-        //    Console.WriteLine("Formato de GUID inválido.");
-        //}
-        //    ManejoMedico manejoMedicos = new ManejoMedico();
-
-        //    while (true)
-        //    {
-        //        Console.WriteLine("Seleccione una opción para gestionar médicos:");
-        //        Console.WriteLine("1. Agregar médico");
-        //        Console.WriteLine("2. Modificar médico");
-        //        Console.WriteLine("3. Eliminar médico");
-        //        Console.WriteLine("4. Consultar médicos");
-        //        Console.WriteLine("5. Consultar un solo médico");
-        //        Console.WriteLine("6. Salir");
-
-        //        string opcion = Console.ReadLine();
-        //        switch (opcion)
-        //        {
-        //            case "1":
-        //                AgregarMedico(manejoMedicos);
-        //                break;
-        //            case "2":
-        //                ModificarMedico(manejoMedicos);
-        //                break;
-        //            case "3":
-        //                EliminarMedico(manejoMedicos);
-        //                break;
-        //            case "4":
-        //                ConsultarMedicos(manejoMedicos);
-        //                break;
-        //            case "5":
-        //                ConsultarUnMedico(manejoMedicos);
-        //                break;
-        //            case "6":
-        //                return;
-        //            default:
-        //                Console.WriteLine("Opción no válida. Intente de nuevo.");
-        //                break;
-        //        }
-        //    }
-        //}
-
-        //static void AgregarMedico(ManejoMedico manejoMedicos)
-        //{
-        //    Console.WriteLine("Ingrese el nombre del médico:");
-        //    string nombre = Console.ReadLine();
-
-        //    Console.WriteLine("Ingrese la especialidad del médico:");
-        //    string especialidad = Console.ReadLine();
-
-        //    Console.WriteLine("Ingrese el ID del departamento (GUID):");
-        //    string idDepartamento = Console.ReadLine();
-
-        //    if (Guid.TryParse(idDepartamento, out Guid guidDepartamento))
-        //    {
-        //        Medico medico = new Medico
-        //        {
-        //            DoctorId = Guid.NewGuid(),
-        //            Nombre = nombre,
-        //            Especialidad = especialidad,
-        //            IdDepartamento = guidDepartamento
-        //        };
-
-        //        manejoMedicos.GuardarMedico(medico);
-        //        Console.WriteLine("Médico agregado exitosamente.");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Formato de GUID inválido.");
-        //    }
-        //}
-
-        //static void ModificarMedico(ManejoMedico manejoMedicos)
-        //{
-        //    Console.WriteLine("Ingrese el ID del médico (GUID) a modificar:");
-        //    string doctorId = Console.ReadLine();
-
-        //    if (Guid.TryParse(doctorId, out Guid guidDoctorId))
-        //    {
-        //        Console.WriteLine("Ingrese el nuevo nombre del médico:");
-        //        string nombre = Console.ReadLine();
-
-        //        Console.WriteLine("Ingrese la nueva especialidad del médico:");
-        //        string especialidad = Console.ReadLine();
-
-        //        Console.WriteLine("Ingrese el nuevo ID del departamento (GUID):");
-        //        string idDepartamento = Console.ReadLine();
-
-        //        if (Guid.TryParse(idDepartamento, out Guid guidDepartamento))
-        //        {
-        //            manejoMedicos.ActualizarMedico(guidDoctorId, nombre, especialidad, guidDepartamento);
-        //            Console.WriteLine("Médico modificado exitosamente.");
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("Formato de GUID del departamento inválido.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Formato de GUID del médico inválido.");
-        //    }
-        //}
-
-        //static void EliminarMedico(ManejoMedico manejoMedicos)
-        //{
-        //    Console.WriteLine("Ingrese el ID del médico (GUID) a eliminar:");
-        //    string doctorId = Console.ReadLine();
-
-        //    if (Guid.TryParse(doctorId, out Guid guidDoctorId))
-        //    {
-        //        manejoMedicos.EliminarMedico(guidDoctorId);
-        //        Console.WriteLine("Médico eliminado exitosamente.");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Formato de GUID inválido.");
-        //    }
-        //}
-
-        //static void ConsultarMedicos(ManejoMedico manejoMedicos)
-        //{
-        //    List<Medico> medicos = manejoMedicos.ObtenerMedicos();
-
-        //    if (medicos.Count > 0)
-        //    {
-        //        foreach (var medico in medicos)
-        //        {
-        //            Console.WriteLine($"ID: {medico.DoctorId}, Nombre: {medico.Nombre}, Especialidad: {medico.Especialidad}, ID Departamento: {medico.IdDepartamento}");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("No se encontraron médicos.");
-        //    }
-        //}
-
-        //static void ConsultarUnMedico(ManejoMedico manejoMedicos)
-        //{
-        //    Console.WriteLine("Ingrese el ID del médico (GUID) a consultar:");
-        //    string doctorId = Console.ReadLine();
-
-        //    if (Guid.TryParse(doctorId, out Guid guidDoctorId))
-        //    {
-        //        Medico medico = manejoMedicos.ObtenerMedico(guidDoctorId);
-        //        if (medico != null)
-        //        {
-        //            Console.WriteLine($"ID: {medico.DoctorId}, Nombre: {medico.Nombre}, Especialidad: {medico.Especialidad}, ID Departamento: {medico.IdDepartamento}");
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("No se encontró el médico.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Formato de GUID inválido.");
-        //    }
-
-        //}
-        ManejoCitas manejoCitas = new ManejoCitas();
+    static async Task PacienteMenu()
+    {
+        var manejoPaciente = new ManejoPacientes();
 
         while (true)
         {
-            Console.WriteLine("Seleccione una opción para gestionar citas:");
-            Console.WriteLine("1. Agregar cita");
-            Console.WriteLine("2. Modificar cita");
-            Console.WriteLine("3. Eliminar cita");
-            Console.WriteLine("4. Consultar citas");
-            Console.WriteLine("5. Consultar una sola cita");
-            Console.WriteLine("6. Salir");
+            Console.WriteLine("Menu Paciente:");
+            Console.WriteLine("1. Crear Registro");
+            Console.WriteLine("2. Salir al menú principal");
 
-            string opcion = Console.ReadLine();
-            switch (opcion)
+            string option = Console.ReadLine();
+            switch (option)
             {
                 case "1":
-                    AgregarCita(manejoCitas);
+                    Console.WriteLine("Ingrese su nombre:");
+                    string nombrePaciente = Console.ReadLine();
+                    Console.WriteLine("Ingrese la fecha (yyyy-MM-dd):");
+                    DateOnly fecha = DateOnly.Parse(Console.ReadLine());
+
+                    var nuevoRegistro = new Paciente
+                    {
+                        IdPaciente = Guid.NewGuid(),
+                        NombrePaciente = nombrePaciente,
+                        FechaNacimiento = fecha
+                    };
+
+                    manejoPaciente.GuardarPaciente(nuevoRegistro);
+                    Console.WriteLine("Registro guardado exitosamente.");
+                    break;
+
+                case "2":
+                    return;
+
+                default:
+                    Console.WriteLine("Opción no válida. Intente de nuevo.");
+                    break;
+            }
+        }
+    }
+
+    static async Task DoctorMenu()
+    {
+        var manejoCitas = new ManejoCitas();
+        var manejoRegistros = new ManejoRegistros();
+
+        while (true)
+        {
+            Console.WriteLine("Menu Doctor:");
+            Console.WriteLine("1. Crear Cita");
+            Console.WriteLine("2. Actualizar Cita");
+            Console.WriteLine("3. Eliminar Cita");
+            Console.WriteLine("4. Ver Citas");
+            Console.WriteLine("5. Crear Registro");
+            Console.WriteLine("6. Actualizar Registro");
+            Console.WriteLine("7. Eliminar Registro");
+            Console.WriteLine("8. Ver Registros");
+            Console.WriteLine("9. Salir al menú principal");
+
+            string option = Console.ReadLine();
+            switch (option)
+            {
+                case "1":
+                    await CrearCita(manejoCitas);
                     break;
                 case "2":
-                    ModificarCita(manejoCitas);
+                    await ActualizarCita(manejoCitas);
                     break;
                 case "3":
-                    EliminarCita(manejoCitas);
+                    await EliminarCita(manejoCitas);
                     break;
                 case "4":
-                    ConsultarCitas(manejoCitas);
+                    await VerCitas(manejoCitas);
                     break;
                 case "5":
-                    ConsultarUnaCita(manejoCitas);
+                    await CrearRegistro(manejoRegistros);
                     break;
                 case "6":
+                    await ActualizarRegistro(manejoRegistros);
+                    break;
+                case "7":
+                    await EliminarRegistro(manejoRegistros);
+                    break;
+                case "8":
+                    await VerRegistros(manejoRegistros);
+                    break;
+                case "9":
                     return;
                 default:
                     Console.WriteLine("Opción no válida. Intente de nuevo.");
@@ -366,135 +138,169 @@ public class Program()
         }
     }
 
-    static void AgregarCita(ManejoCitas manejoCitas)
+    static async Task AdminMenu()
     {
-        Console.WriteLine("Ingrese la fecha de la cita (AAAA-MM-DD):");
-        string fechaInput = Console.ReadLine();
-        DateOnly fecha = DateOnly.Parse(fechaInput);
-
-        Console.WriteLine("Ingrese la hora de la cita (HH:MM):");
-        string horaInput = Console.ReadLine();
-        TimeOnly hora = TimeOnly.Parse(horaInput);
-
-        Console.WriteLine("Ingrese el ID del paciente (GUID):");
-        string pacienteId = Console.ReadLine();
-
-        Console.WriteLine("Ingrese el ID del doctor (GUID):");
-        string doctorId = Console.ReadLine();
-
-        if (Guid.TryParse(pacienteId, out Guid guidPacienteId) && Guid.TryParse(doctorId, out Guid guidDoctorId))
+        // Puedes agregar opciones de administración aquí
+        while (true)
         {
-            Citas cita = new Citas
+            Console.WriteLine("Menu Admin:");
+            Console.WriteLine("1. Realizar tareas de administración");
+            Console.WriteLine("2. Salir al menú principal");
+
+            string option = Console.ReadLine();
+            switch (option)
             {
-                idCita = Guid.NewGuid(),
-                Fecha = fecha,
-                Hora = hora,
-                PacienteId = guidPacienteId,
-                DoctorId = guidDoctorId
-            };
+                case "1":
+                    // Implementa las tareas de administración
+                    Console.WriteLine("Tareas de administración aún no implementadas.");
+                    break;
 
-            manejoCitas.GuardarCitas(cita);
-            Console.WriteLine("Cita agregada exitosamente.");
-        }
-        else
-        {
-            Console.WriteLine("Formato de GUID inválido.");
+                case "2":
+                    return;
+
+                default:
+                    Console.WriteLine("Opción no válida. Intente de nuevo.");
+                    break;
+            }
         }
     }
 
-    static void ModificarCita(ManejoCitas manejoCitas)
+    static async Task CrearCita(ManejoCitas manejoCitas)
     {
-        Console.WriteLine("Ingrese el ID de la cita (GUID) a modificar:");
-        string citaId = Console.ReadLine();
+        Console.WriteLine("Ingrese la fecha (yyyy-MM-dd):");
+        DateOnly fecha = DateOnly.Parse(Console.ReadLine());
 
-        if (Guid.TryParse(citaId, out Guid guidCitaId))
+        Console.WriteLine("Ingrese la hora (hh:mm):");
+        TimeOnly hora = TimeOnly.Parse(Console.ReadLine());
+
+        Console.WriteLine("Ingrese el ID del paciente:");
+        Guid pacienteId = Guid.Parse(Console.ReadLine());
+
+        Console.WriteLine("Ingrese el ID del doctor:");
+        Guid doctorId = Guid.Parse(Console.ReadLine());
+
+        var nuevaCita = new Citas
         {
-            Console.WriteLine("Ingrese la nueva fecha de la cita (AAAA-MM-DD):");
-            string fechaInput = Console.ReadLine();
-            DateOnly fecha = DateOnly.Parse(fechaInput);
+            idCita = Guid.NewGuid(),
+            Fecha = fecha,
+            Hora = hora,
+            PacienteId = pacienteId,
+            DoctorId = doctorId
+        };
 
-            Console.WriteLine("Ingrese la nueva hora de la cita (HH:MM):");
-            string horaInput = Console.ReadLine();
-            TimeOnly hora = TimeOnly.Parse(horaInput);
+        manejoCitas.GuardarCitas(nuevaCita);
+        Console.WriteLine("Cita guardada exitosamente.");
+    }
 
-            Console.WriteLine("Ingrese el nuevo ID del paciente (GUID):");
-            string pacienteId = Console.ReadLine();
+    static async Task ActualizarCita(ManejoCitas manejoCitas)
+    {
+        Console.WriteLine("Ingrese el ID de la cita a actualizar:");
+        Guid idCita = Guid.Parse(Console.ReadLine());
 
-            Console.WriteLine("Ingrese el nuevo ID del doctor (GUID):");
-            string doctorId = Console.ReadLine();
+        Console.WriteLine("Ingrese la nueva fecha (yyyy-MM-dd):");
+        DateOnly fecha = DateOnly.Parse(Console.ReadLine());
 
-            if (Guid.TryParse(pacienteId, out Guid guidPacienteId) && Guid.TryParse(doctorId, out Guid guidDoctorId))
-            {
-                manejoCitas.ActualizarCita(guidCitaId, fecha, hora, guidPacienteId, guidDoctorId);
-                Console.WriteLine("Cita modificada exitosamente.");
-            }
-            else
-            {
-                Console.WriteLine("Formato de GUID del paciente o del doctor inválido.");
-            }
-        }
-        else
+        Console.WriteLine("Ingrese la nueva hora (hh:mm):");
+        TimeOnly hora = TimeOnly.Parse(Console.ReadLine());
+
+        Console.WriteLine("Ingrese el nuevo ID del paciente:");
+        Guid pacienteId = Guid.Parse(Console.ReadLine());
+
+        manejoCitas.ActualizarCita(idCita, fecha, hora, pacienteId);
+        Console.WriteLine("Cita actualizada exitosamente.");
+    }
+
+    static async Task EliminarCita(ManejoCitas manejoCitas)
+    {
+        Console.WriteLine("Ingrese el ID de la cita a eliminar:");
+        Guid idCita = Guid.Parse(Console.ReadLine());
+
+        manejoCitas.EliminarCita(idCita);
+        Console.WriteLine("Cita eliminada exitosamente.");
+    }
+
+    static async Task VerCitas(ManejoCitas manejoCitas)
+    {
+        var citas = manejoCitas.ObtenerMedicos();
+        foreach (var cita in citas)
         {
-            Console.WriteLine("Formato de GUID de la cita inválido.");
+            Console.WriteLine($"ID: {cita.idCita}, Fecha: {cita.Fecha}, Hora: {cita.Hora}, Paciente: {cita.PacienteId}, Doctor: {cita.DoctorId}");
         }
     }
 
-    static void EliminarCita(ManejoCitas manejoCitas)
+    static async Task CrearRegistro(ManejoRegistros manejoRegistros)
     {
-        Console.WriteLine("Ingrese el ID de la cita (GUID) a eliminar:");
-        string citaId = Console.ReadLine();
+        Console.WriteLine("Ingrese el ID del paciente:");
+        Guid pacienteId = Guid.Parse(Console.ReadLine());
 
-        if (Guid.TryParse(citaId, out Guid guidCitaId))
+        Console.WriteLine("Ingrese el ID del doctor:");
+        Guid doctorId = Guid.Parse(Console.ReadLine());
+
+        Console.WriteLine("Ingrese el diagnóstico:");
+        string diagnostico = Console.ReadLine();
+
+        Console.WriteLine("Ingrese el tratamiento:");
+        string tratamiento = Console.ReadLine();
+
+        var nuevoRegistro = new Registro
         {
-            manejoCitas.EliminarCita(guidCitaId);
-            Console.WriteLine("Cita eliminada exitosamente.");
-        }
-        else
-        {
-            Console.WriteLine("Formato de GUID inválido.");
-        }
+            Id = Guid.NewGuid(),
+            fecha = DateOnly.FromDateTime(DateTime.Now),
+            Diagnostico = diagnostico,
+            Tratamiento = tratamiento,
+            Id_Paciente = pacienteId,
+            Id_Doctor = doctorId
+        };
+
+        manejoRegistros.GuardarRegistro(nuevoRegistro);
+        Console.WriteLine("Registro guardado exitosamente.");
     }
 
-    static void ConsultarCitas(ManejoCitas manejoCitas)
+    static async Task ActualizarRegistro(ManejoRegistros manejoRegistros)
     {
-        List<Citas> citas = manejoCitas.ObtenerMedicos();
+        Console.WriteLine("Ingrese el ID del registro a actualizar:");
+        Guid id = Guid.Parse(Console.ReadLine());
 
-        if (citas.Count > 0)
-        {
-            foreach (var cita in citas)
-            {
-                Console.WriteLine($"ID: {cita.idCita}, Fecha: {cita.Fecha}, Hora: {cita.Hora}, ID Paciente: {cita.PacienteId}, ID Doctor: {cita.DoctorId}");
-            }
-        }
-        else
-        {
-            Console.WriteLine("No se encontraron citas.");
-        }
+        Console.WriteLine("Ingrese la nueva fecha (yyyy-MM-dd):");
+        DateOnly fecha = DateOnly.Parse(Console.ReadLine());
+
+        Console.WriteLine("Ingrese el nuevo diagnóstico:");
+        string diagnostico = Console.ReadLine();
+
+        Console.WriteLine("Ingrese el nuevo tratamiento:");
+        string tratamiento = Console.ReadLine();
+
+        Console.WriteLine("Ingrese el nuevo ID del paciente:");
+        Guid idPaciente = Guid.Parse(Console.ReadLine());
+
+        Console.WriteLine("Ingrese el nuevo ID del doctor:");
+        Guid idDoctor = Guid.Parse(Console.ReadLine());
+
+        manejoRegistros.ActualizarRegistro(id, fecha, diagnostico, tratamiento, idPaciente, idDoctor);
+        Console.WriteLine("Registro actualizado exitosamente.");
     }
 
-    static void ConsultarUnaCita(ManejoCitas manejoCitas)
+    static async Task EliminarRegistro(ManejoRegistros manejoRegistros)
     {
-        Console.WriteLine("Ingrese el ID de la cita (GUID) a consultar:");
-        string citaId = Console.ReadLine();
+        Console.WriteLine("Ingrese el ID del registro a eliminar:");
+        Guid id = Guid.Parse(Console.ReadLine());
 
-        if (Guid.TryParse(citaId, out Guid guidCitaId))
-        {
-            Citas cita = manejoCitas.ObtenerCita(guidCitaId);
-            if (cita != null)
-            {
-                Console.WriteLine($"ID: {cita.idCita}, Fecha: {cita.Fecha}, Hora: {cita.Hora}, ID Paciente: {cita.PacienteId}, ID Doctor: {cita.DoctorId}");
-            }
-            else
-            {
-                Console.WriteLine("No se encontró la cita.");
-            }
-        }
-        else
-        {
-            Console.WriteLine("Formato de GUID inválido.");
-        }
+        manejoRegistros.EliminarRegistro(id);
+        Console.WriteLine("Registro eliminado exitosamente.");
     }
 
-}
+    static async Task VerRegistros(ManejoRegistros manejoRegistros)
+    {
+        var registros = manejoRegistros.ObtenerRegistros();
+        foreach (var registro in registros)
+        {
+            Console.WriteLine($"ID: {registro.Id}, Fecha: {registro.fecha}, Diagnóstico: {registro.Diagnostico}, Tratamiento: {registro.Tratamiento}, Paciente: {registro.Id_Paciente}, Doctor: {registro.Id_Doctor}");
+        }
+      }
+    }
+
+
+
+
 
     
